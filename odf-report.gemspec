@@ -27,5 +27,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('rubyzip', "~> 1.1.6")
   s.add_runtime_dependency('nokogiri', ">= 1.5.0")
-  s.add_runtime_dependency('mime-types', ">= 3.0")
+  s.add_runtime_dependency('mime-types', ">= 2.0")
 end
