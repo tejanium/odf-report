@@ -4,7 +4,6 @@ require 'fileutils'
 require 'nokogiri'
 require 'set'
 require 'mime/types'
-require 'pry'
 
 require File.expand_path('../odf-report/parser/default',  __FILE__)
 
