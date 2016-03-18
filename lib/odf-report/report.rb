@@ -14,9 +14,9 @@ module ODFReport
       @image_name_additions = {}
       @global_image_paths_set = Set.new
       @sections = []
+      @tags = {}
 
       yield(self)
-
     end
 
     def add_field(field_tag, value='')
@@ -31,7 +31,8 @@ module ODFReport
       @images << image
     end
 
-    def add_text(field_tag, value='')                                                                                     opts = {:name => field_tag, :value => value}
+    def add_text(field_tag, value='')
+      opts = {:name => field_tag, :value => value}
       text = Text.new(opts)
       @texts << text
     end
@@ -52,6 +53,25 @@ module ODFReport
       yield(sec)
     end
 
+    def replace_tag(tag, value='')
+      @tags.merge!("[#{ tag.upcase }]" => value)
+    end
+
+    def fast_generate(dest = nil)
+      @file.update_content do |file|
+        file.update_files('content.xml') do |txt|
+          regex = Regexp.union(@tags.keys)
+          txt.gsub!(regex, @tags)
+        end
+      end
+
+      if dest
+        ::File.open(dest, "wb") {|f| f.write(@file.data) }
+      else
+        @file.data
+      end
+    end
+
     def generate(dest = nil)
 
       @file.update_content do |file|
@@ -67,7 +87,7 @@ module ODFReport
             @texts.each    { |t| t.replace!(doc) }
 
             @fields.each   { |f| f.replace!(doc) }
-              
+
             @images.each   { |i| i.replace!(doc).nil? ? nil : (@image_name_additions.merge! i.replace!(doc)) }
 
             avoid_duplicate_image_names(doc)
