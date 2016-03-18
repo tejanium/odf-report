@@ -63,6 +63,14 @@ module ODFReport
           regex = Regexp.union(@tags.keys)
           txt.gsub!(regex, @tags)
         end
+
+        file.update_manifest_file do |txt|
+
+          parse_document(txt) do |doc|
+            update_manifest(doc)
+          end
+
+        end
       end
 
       if dest
